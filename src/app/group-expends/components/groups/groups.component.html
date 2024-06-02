@@ -1,0 +1,54 @@
+<!-- <h1>Expenses</h1>
+<button (click)="createGroup()">Create Group</button> -->
+<ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "default" color = "#fff"  [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-sm-12" style="
+        display: flex;
+        justify-content: flex-end;
+        padding-bottom: 4px;
+    ">
+            <button type="button" class="btn btn-danger" (click)="deleteDatabase()" >Reset App</button> 
+        </div>
+    </div>
+    <div class="row border p-5">
+        <h3>Groups</h3>
+        
+        <!-- Here it is add Participant -->
+        <div class="col-sm-12">
+            <form [formGroup]="groupForm" (ngSubmit)="onGroupFormSubmit()">
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Group name</label>
+                    <input type="email" class="form-control" formControlName="name">
+                    <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+
+
+</div>
+
+<div class="container">
+    <div class="row mt-3 border p-5">
+        <div class="col-sm-12 mt-3" *ngFor="let group of groups">
+            
+                <mat-card>
+                    <mat-card-content>
+                        <div class="row">
+                            <a  style="text-decoration: none;color: black;" class="col-sm-10" [routerLink]="['/', 'group-spends',group.id]">
+                                {{group.name}}  
+                            </a>
+                            
+                            <div class="col-sm-2" style="text-align: right;">
+                                <i class="fa fa-trash"  style="cursor: pointer;" aria-hidden="true" (click)="deleteGroup(group.id)"></i>
+                            </div>  
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            
+        </div>
+    </div>
+</div>

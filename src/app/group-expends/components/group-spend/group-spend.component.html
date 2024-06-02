@@ -1,0 +1,177 @@
+<ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "default" color = "#fff"  [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-sm-6">
+            <h2>{{groupName | uppercase}}</h2>
+        </div>
+        <div class="col-sm-6">
+            <i class="fa fa-home" [routerLink]="['/']" style="
+            font-size:48px;color:#a200ffba;
+            display: flex;
+            justify-content: flex-end;
+            cursor: pointer;
+        "></i>
+        </div>
+    </div>
+    
+    <div class="accordion row border" id="accordionPanelsStayOpenExample">
+        <div class="accordion-item p-0">
+            <h2 class="accordion-header m-0" id="panelsStayOpen-headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                    aria-controls="panelsStayOpen-collapseOne" style="
+                    background: white;
+                    box-shadow: none;
+                    font-size: 30px;
+                ">
+                    Participant
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
+                aria-labelledby="panelsStayOpen-headingOne">
+                <div class="accordion-body">
+
+                    <div class="col-sm-12">
+                        <form [formGroup]="participantForm" (ngSubmit)="addParticipant()">
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Add Participant</label>
+                                <input type="email" class="form-control" formControlName="name">
+                                <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                    <div class="col-sm-12">
+                        <mat-chip-set class="example-chip">
+                            @for (participant of participants; track participant) {
+                            <div>
+                                <mat-chip class="example-box" cdkDrag>
+                                    {{participant.name}} 
+                                    <i class="fa fa-close" style="font-size:14px; cursor: pointer;" (click)="deleteParticipants(participant.id)"></i>
+                                </mat-chip>
+                            </div>
+                            }
+                        </mat-chip-set>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Here it is add Participant -->
+
+    <div class="accordion row border mt-3" id="accordionPanelsStayOpen2Example">
+        <div class="accordion-item p-0">
+            <h2 class="accordion-header m-0" id="panelsStayOpen2-headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen2-collapseOne" aria-expanded="true"
+                    aria-controls="panelsStayOpen2-collapseOne" style="
+                    background: white;
+                    box-shadow: none;
+                    font-size: 30px;
+                ">
+                    Expenses
+                </button>
+            </h2>
+            <div id="panelsStayOpen2-collapseOne" class="accordion-collapse collapse show"
+                aria-labelledby="panelsStayOpen2-headingOne">
+                <div class="accordion-body">
+                    <form [formGroup]="expenseForm" (ngSubmit)="onExpenseFormSubmit()">
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Description</label>
+                            <textarea type="text" class="form-control" formControlName="name"></textarea>
+                            <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+                        </div>
+
+                        <div class="mb-3 row">
+                            <div class="col-sm-6">
+
+                                <label for="exampleInputEmail1" class="form-label">Amount</label>
+                                <input type="number" class="form-control" formControlName="amount">
+                                <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="exampleInputEmail1" class="form-label">Who Paid</label>
+                                <select class="form-select" aria-label="Default select example"
+                                    formControlName="whoPaid">
+                                    <option *ngFor="let participant of participants" [value]="participant.id">
+                                        {{participant.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <div class="col-sm-12" formGroupName="splitOn">
+                                <label for="exampleInputEmail1" class="form-label me-3" >Split On</label>
+                                <button class="btn btn-warning me-3"  type="button" (click)="selectAllParticipant(true)">Select All</button>
+                                <button class="btn btn-warning" type="button" (click)="selectAllParticipant(false)">Deselect All</button>
+                                <div class="row mt-2">
+                                    <div *ngFor="let participant of participants; let i=index" class="col-sm-2">
+                                        <label>
+                                            <input type="checkbox" [formControlName]="''+participant.id">
+                                            {{participant.name}}
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">{{editExpenseId ? 'Update Expense': 'Add Expense' }}</button>
+                        <button type="button" class="btn btn-warning" *ngIf="editExpenseId">Reset Form</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-sm-4">
+            <button type="button" class="btn btn-warning" (click)="convetToPDF()">Convert To Pdf</button>
+        </div>
+    </div>
+
+
+    <div class="row mt-5" id="calculateData">
+        <!-- here will be table -->
+
+        <div class="col-sm-12" style="overflow-x: auto;">
+            <h4>Total : {{amountTotal}}</h4>
+            <h4 *ngFor="let payBy of payByArray">{{payBy}}</h4>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">Description</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">whoPaid</th>
+                        <th scope="col">Participants</th>
+                        <th scope="col" *ngIf="isActionShow">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let mappedExpense of mappedExpenses">
+
+                        <td>{{mappedExpense.description}}</td>
+                        <td>{{mappedExpense.amount}}</td>
+                        <td>{{mappedExpense.whoPaidName}}</td>
+                        <td class="fixed-cell">{{mappedExpense.participants.join(', ')}}</td>
+                        <td *ngIf="isActionShow" class="text-center" style="cursor: pointer;">
+                            <i class="fa fa-trash" style="font-size:36px; padding-right: 20px;" aria-hidden="true" (click)="deleteExpense(mappedExpense.id)"></i>
+                            <i class="fa fa-edit" style="font-size:36px" aria-hidden="true" (click)="editExpense(mappedExpense.id)"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- <p>group-spend works!</p>
+
+
+<button (click)="addParticipantByDialog()">Add Participant</button>
+
+<h2>Participants</h2>
+<p *ngFor="let participant of participants">{{participant.name}}</p> -->

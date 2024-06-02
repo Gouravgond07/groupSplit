@@ -1,0 +1,4 @@
+.fixed-cell {
+    width: 200px; /* Set your desired fixed width */
+    word-wrap: break-word;
+  }
