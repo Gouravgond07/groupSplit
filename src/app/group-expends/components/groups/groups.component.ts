@@ -32,10 +32,12 @@ export class GroupsComponent implements OnInit {
     this.groupExpensesService.getGroup()
       .subscribe({
         next: (val: IGroup[]) => {
+          this.spinner.hide()
           this.groups = val;
           console.log(this.groups)
         },
         error: (err) => {
+          this.spinner.hide()
           console.log(err);
         },
         complete: () => {
@@ -54,10 +56,12 @@ export class GroupsComponent implements OnInit {
     this.spinner.show();
     this.groupExpensesService.createGroups(groupFormValue.name).subscribe({
       next: (val) => {
+        this.spinner.hide()
         this.getGroup()
         this.groupForm.reset();
       },
       error: (err) => {
+        this.spinner.hide()
         console.log(err);
       },
       complete: () => {
@@ -72,9 +76,10 @@ export class GroupsComponent implements OnInit {
       this.spinner.show();
       this.groupExpensesService.deleteGroup(groupId).subscribe({
         next: () => {
-
+          this.spinner.hide()
         },
-        error(error) {
+        error: (error) => {
+          this.spinner.hide()
           console.log(error);
         },
         complete: () => {
@@ -87,7 +92,7 @@ export class GroupsComponent implements OnInit {
 
   deleteDatabase() {
     const choice = confirm('This will delete all your data do you want to go');
-    if(choice) {
+    if (choice) {
       this.groupExpensesService.deleteDatabase().subscribe(() => {
         location.reload();
       })
